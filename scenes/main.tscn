@@ -1,0 +1,92 @@
+[gd_scene load_steps=17 format=3 uid="uid://cjoj0xmp1epkb"]
+
+[ext_resource type="Script" path="res://scripts/init.gd" id="1_jxj2e"]
+[ext_resource type="PackedScene" uid="uid://bq86r4yll8po" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_fullglove_low.tscn" id="2_bvtxn"]
+[ext_resource type="PackedScene" uid="uid://xqimcf20s2jp" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_fullglove_low.tscn" id="3_e1lqs"]
+[ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="3_rwvgy"]
+[ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="4_b6i14"]
+[ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="4_iklym"]
+[ext_resource type="Texture2D" uid="uid://c0idu8xd0r0et" path="res://textures/grid.png" id="5_pan8l"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tnbrt"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_w60jc"]
+sky_material = SubResource("ProceduralSkyMaterial_tnbrt")
+
+[sub_resource type="Environment" id="Environment_8l3hs"]
+background_mode = 2
+sky = SubResource("Sky_w60jc")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_50ch1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nodyl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qesnn"]
+size = Vector3(1, 1.5, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_epyn4"]
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gj0om"]
+albedo_texture = ExtResource("5_pan8l")
+uv1_scale = Vector3(50, 50, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_po0ot"]
+size = Vector3(100, 1, 100)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_jxj2e")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_8l3hs")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
+tracker = &"left_hand"
+
+[node name="LeftHand" parent="XROrigin3D/LeftController" instance=ExtResource("2_bvtxn")]
+hand_material_override = SubResource("StandardMaterial3D_50ch1")
+
+[node name="MovementDirect" parent="XROrigin3D/LeftController" instance=ExtResource("3_rwvgy")]
+
+[node name="MovementTurn" parent="XROrigin3D/LeftController" instance=ExtResource("4_b6i14")]
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
+tracker = &"right_hand"
+
+[node name="RightHand" parent="XROrigin3D/RightController" instance=ExtResource("3_e1lqs")]
+hand_material_override = SubResource("StandardMaterial3D_nodyl")
+
+[node name="MovementDirect" parent="XROrigin3D/RightController" instance=ExtResource("3_rwvgy")]
+
+[node name="MovementTurn" parent="XROrigin3D/RightController" instance=ExtResource("4_b6i14")]
+
+[node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("4_iklym")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/PlayerBody"]
+shape = SubResource("BoxShape3D_qesnn")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("PlaneMesh_epyn4")
+surface_material_override/0 = SubResource("StandardMaterial3D_gj0om")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_po0ot")
