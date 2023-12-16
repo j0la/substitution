@@ -1,12 +1,16 @@
-[gd_scene load_steps=17 format=3 uid="uid://cjoj0xmp1epkb"]
+[gd_scene load_steps=26 format=3 uid="uid://cjoj0xmp1epkb"]
 
 [ext_resource type="Script" path="res://scripts/init.gd" id="1_jxj2e"]
 [ext_resource type="PackedScene" uid="uid://bq86r4yll8po" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_fullglove_low.tscn" id="2_bvtxn"]
+[ext_resource type="Script" path="res://scripts/astral-plane.gd" id="2_f3l8a"]
 [ext_resource type="PackedScene" uid="uid://xqimcf20s2jp" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_fullglove_low.tscn" id="3_e1lqs"]
 [ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="3_rwvgy"]
 [ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="4_b6i14"]
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="4_iklym"]
 [ext_resource type="Texture2D" uid="uid://c0idu8xd0r0et" path="res://textures/grid.png" id="5_pan8l"]
+[ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="6_22wtt"]
+[ext_resource type="PackedScene" uid="uid://kyhaogt0a4q8" path="res://addons/godot-xr-tools/functions/movement_flight.tscn" id="9_mkrid"]
+[ext_resource type="Script" path="res://addons/godot-xr-tools/objects/pickable.gd" id="10_y5knq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tnbrt"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -25,9 +29,6 @@ glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nodyl"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_qesnn"]
-size = Vector3(1, 1.5, 1)
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_epyn4"]
 size = Vector2(100, 100)
 
@@ -38,8 +39,28 @@ uv1_scale = Vector3(50, 50, 50)
 [sub_resource type="BoxShape3D" id="BoxShape3D_po0ot"]
 size = Vector3(100, 1, 100)
 
+[sub_resource type="BoxMesh" id="BoxMesh_vymq4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rki6q"]
+albedo_color = Color(1, 0.254902, 0.231373, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6ul6m"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_gvmv7"]
+top_radius = 0.2
+bottom_radius = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hervd"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_h67v4"]
+radius = 0.2
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_jxj2e")
+
+[node name="AstralPlane" type="Node" parent="."]
+script = ExtResource("2_f3l8a")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8l3hs")
@@ -53,6 +74,9 @@ shadow_enabled = true
 [node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 
+[node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("4_iklym")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
 [node name="LeftController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
 tracker = &"left_hand"
@@ -63,6 +87,8 @@ hand_material_override = SubResource("StandardMaterial3D_50ch1")
 [node name="MovementDirect" parent="XROrigin3D/LeftController" instance=ExtResource("3_rwvgy")]
 
 [node name="MovementTurn" parent="XROrigin3D/LeftController" instance=ExtResource("4_b6i14")]
+
+[node name="FunctionPickup" parent="XROrigin3D/LeftController" instance=ExtResource("6_22wtt")]
 
 [node name="RightController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
@@ -75,18 +101,52 @@ hand_material_override = SubResource("StandardMaterial3D_nodyl")
 
 [node name="MovementTurn" parent="XROrigin3D/RightController" instance=ExtResource("4_b6i14")]
 
-[node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("4_iklym")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+[node name="FunctionPickup" parent="XROrigin3D/RightController" instance=ExtResource("6_22wtt")]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/PlayerBody"]
-shape = SubResource("BoxShape3D_qesnn")
+[node name="MovementFlight" parent="XROrigin3D" instance=ExtResource("9_mkrid")]
+controller = 1
+flight_button = ""
+pitch = 0
+bearing = 0
 
-[node name="Floor" type="StaticBody3D" parent="."]
+[node name="World" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+[node name="Floor" type="StaticBody3D" parent="World"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Floor"]
 mesh = SubResource("PlaneMesh_epyn4")
 surface_material_override/0 = SubResource("StandardMaterial3D_gj0om")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_po0ot")
+
+[node name="Avatar" type="RigidBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52707, -3.09977)
+visible = false
+collision_layer = 4
+collision_mask = 196615
+freeze_mode = 1
+script = ExtResource("10_y5knq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Avatar"]
+mesh = SubResource("BoxMesh_vymq4")
+surface_material_override/0 = SubResource("StandardMaterial3D_rki6q")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Avatar"]
+shape = SubResource("BoxShape3D_6ul6m")
+
+[node name="Pillar" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Pillar"]
+mesh = SubResource("CylinderMesh_gvmv7")
+surface_material_override/0 = SubResource("StandardMaterial3D_hervd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Pillar"]
+shape = SubResource("CylinderShape3D_h67v4")
+
+[connection signal="button_pressed" from="XROrigin3D/LeftController" to="AstralPlane" method="_on_button_pressed"]
+[connection signal="button_released" from="XROrigin3D/LeftController" to="AstralPlane" method="_on_button_released"]
+[connection signal="button_pressed" from="XROrigin3D/RightController" to="AstralPlane" method="_on_button_pressed"]
+[connection signal="button_released" from="XROrigin3D/RightController" to="AstralPlane" method="_on_button_released"]
