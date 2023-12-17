@@ -3,14 +3,16 @@ class_name MovementLerp
 extends XRToolsMovementProvider
 
 # MovementLerp is a custom XR Tools movement provider
-# it provides teleportation with rapid transition via linear interpolation
+# provides teleportation with rapid transition via linear interpolation
 
 enum Controller { LEFT, RIGHT }
 
-@export var order: int = 25 # movement provider priority (lowest runs first)
+@export var order: int = 1 # movement provider priority (lowest runs first)
 @export var controller: Controller = Controller.RIGHT
 @export var lerp_button: String = "ax_button"
-@export var lerp_speed: float = 5.0
+@export var lerp_speed: float = 20
+@export var lerp_offset: float = 0.2 # distance from target to stop transition
+@export var target: Node3D # node to transition towards
 
 var _controller: XRController3D
 var _btn_state: bool = false
@@ -30,8 +32,8 @@ func _ready():
 
 # called by player body while iterating movement providers
 func physics_movement(delta: float, player_body: XRToolsPlayerBody, disabled: bool):
-	# disable lerp if requested or if selected controller is inactive
-	if disabled or !enabled or !_controller.get_is_active():
+	# disable lerp if requested, if selected controller is inactive, or if target is unassigned
+	if disabled or !enabled or !_controller.get_is_active() or !target:
 		is_active = false
 		return
 	
@@ -43,10 +45,17 @@ func physics_movement(delta: float, player_body: XRToolsPlayerBody, disabled: bo
 
 	if !is_active:
 		return
-
-	# interpolate to target position
-	var v = Vector3(0, 1, 0)
-	player_body.velocity = player_body.move_body(v)
+	
+	# get distance to target
+	var lerp_dist := player_body.global_position.distance_to(target.global_position)
+	if lerp_dist < lerp_offset:
+		# within offset to target, stop player and disable lerp
+		player_body.velocity = player_body.move_body(Vector3(0, 0, 0))
+		is_active = false
+	else:
+		# interpolate towards target
+		var lerp_dir := player_body.global_position.direction_to(target.global_position)
+		player_body.velocity = player_body.move_body(lerp_dir * lerp_speed)
 	
 	# return true to indicate to player body that this was an exclusive movement
 	# gravity & ground physics wont be applied

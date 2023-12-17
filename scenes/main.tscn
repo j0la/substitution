@@ -121,7 +121,9 @@ hand_material_override = SubResource("StandardMaterial3D_nodyl")
 pitch = 0
 bearing = 0
 
-[node name="MovementLerp" parent="XROrigin3D" instance=ExtResource("11_uopa1")]
+[node name="MovementLerp" parent="XROrigin3D" node_paths=PackedStringArray("target") instance=ExtResource("11_uopa1")]
+lerp_offset = 0.2
+target = NodePath("../../World/Target")
 
 [node name="World" type="Node3D" parent="."]
 
