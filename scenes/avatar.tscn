@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://ddft7pgnueqtr"]
+
+[ext_resource type="Script" path="res://addons/godot-xr-tools/objects/pickable.gd" id="1_4hufs"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_eufvp"]
+radius = 0.25
+height = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_67qu0"]
+transparency = 1
+albedo_color = Color(0.666667, 0.2, 1, 0.588235)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ftirh"]
+radius = 0.25
+height = 1.5
+
+[node name="Avatar" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 196615
+freeze = true
+freeze_mode = 1
+script = ExtResource("1_4hufs")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("CapsuleMesh_eufvp")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_67qu0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("CapsuleShape3D_ftirh")
