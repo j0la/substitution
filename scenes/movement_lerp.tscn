@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cj7albjrhi1bu"]
+
+[ext_resource type="Script" path="res://scripts/movement_lerp.gd" id="1_dpmo0"]
+
+[node name="MovementLerp" type="Node3D" groups=["movement_providers"]]
+script = ExtResource("1_dpmo0")

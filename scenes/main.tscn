@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://cjoj0xmp1epkb"]
+[gd_scene load_steps=32 format=3 uid="uid://cjoj0xmp1epkb"]
 
 [ext_resource type="Script" path="res://scripts/init.gd" id="1_jxj2e"]
 [ext_resource type="PackedScene" uid="uid://bq86r4yll8po" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_fullglove_low.tscn" id="2_bvtxn"]
@@ -10,7 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://c0idu8xd0r0et" path="res://textures/grid.png" id="5_pan8l"]
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="6_22wtt"]
 [ext_resource type="PackedScene" uid="uid://kyhaogt0a4q8" path="res://addons/godot-xr-tools/functions/movement_flight.tscn" id="9_mkrid"]
+[ext_resource type="PackedScene" uid="uid://fiul51tsyoop" path="res://addons/godot-xr-tools/functions/function_teleport.tscn" id="9_yidih"]
 [ext_resource type="Script" path="res://addons/godot-xr-tools/objects/pickable.gd" id="10_y5knq"]
+[ext_resource type="PackedScene" uid="uid://cj7albjrhi1bu" path="res://scenes/movement_lerp.tscn" id="11_uopa1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tnbrt"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -56,6 +58,16 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_h67v4"]
 radius = 0.2
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_wweyd"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_5xwkw"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_bw6c3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_745t8"]
+transparency = 1
+albedo_color = Color(0.709804, 1, 0.301961, 0.698039)
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_jxj2e")
 
@@ -90,6 +102,8 @@ hand_material_override = SubResource("StandardMaterial3D_50ch1")
 
 [node name="FunctionPickup" parent="XROrigin3D/LeftController" instance=ExtResource("6_22wtt")]
 
+[node name="FunctionTeleport" parent="XROrigin3D/LeftController" instance=ExtResource("9_yidih")]
+
 [node name="RightController" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
 tracker = &"right_hand"
@@ -104,10 +118,10 @@ hand_material_override = SubResource("StandardMaterial3D_nodyl")
 [node name="FunctionPickup" parent="XROrigin3D/RightController" instance=ExtResource("6_22wtt")]
 
 [node name="MovementFlight" parent="XROrigin3D" instance=ExtResource("9_mkrid")]
-controller = 1
-flight_button = ""
 pitch = 0
 bearing = 0
+
+[node name="MovementLerp" parent="XROrigin3D" instance=ExtResource("11_uopa1")]
 
 [node name="World" type="Node3D" parent="."]
 
@@ -145,6 +159,23 @@ surface_material_override/0 = SubResource("StandardMaterial3D_hervd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="World/Pillar"]
 shape = SubResource("CylinderShape3D_h67v4")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.58142, 0.640036, 0)
+collision_layer = 4
+collision_mask = 196615
+script = ExtResource("10_y5knq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/RigidBody3D"]
+shape = SubResource("SphereShape3D_wweyd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/RigidBody3D"]
+mesh = SubResource("SphereMesh_5xwkw")
+
+[node name="Target" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1042, 1.10154, 0)
+mesh = SubResource("CapsuleMesh_bw6c3")
+surface_material_override/0 = SubResource("StandardMaterial3D_745t8")
 
 [connection signal="button_pressed" from="XROrigin3D/LeftController" to="AstralPlane" method="_on_button_pressed"]
 [connection signal="button_released" from="XROrigin3D/LeftController" to="AstralPlane" method="_on_button_released"]
