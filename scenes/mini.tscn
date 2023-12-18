@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://counu7ksj2lu0"]
+
+[ext_resource type="Script" path="res://scripts/mini.gd" id="1_hrsdn"]
+
+[node name="Mini" type="Node"]
+script = ExtResource("1_hrsdn")
