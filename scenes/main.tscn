@@ -1,8 +1,7 @@
-[gd_scene load_steps=25 format=3 uid="uid://cjoj0xmp1epkb"]
+[gd_scene load_steps=24 format=3 uid="uid://cjoj0xmp1epkb"]
 
 [ext_resource type="Script" path="res://scripts/init.gd" id="1_jxj2e"]
 [ext_resource type="PackedScene" uid="uid://bq86r4yll8po" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_fullglove_low.tscn" id="2_bvtxn"]
-[ext_resource type="Script" path="res://scripts/astral-plane.gd" id="2_f3l8a"]
 [ext_resource type="PackedScene" uid="uid://xqimcf20s2jp" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_fullglove_low.tscn" id="3_e1lqs"]
 [ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="3_rwvgy"]
 [ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="4_b6i14"]
@@ -11,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="6_22wtt"]
 [ext_resource type="PackedScene" uid="uid://kyhaogt0a4q8" path="res://addons/godot-xr-tools/functions/movement_flight.tscn" id="9_mkrid"]
 [ext_resource type="PackedScene" uid="uid://fiul51tsyoop" path="res://addons/godot-xr-tools/functions/function_teleport.tscn" id="9_yidih"]
-[ext_resource type="PackedScene" uid="uid://cj7albjrhi1bu" path="res://scenes/movement_lerp.tscn" id="11_uopa1"]
+[ext_resource type="PackedScene" uid="uid://ckessri0b7mgf" path="res://scenes/substitution.tscn" id="11_tnavo"]
 [ext_resource type="PackedScene" uid="uid://ddft7pgnueqtr" path="res://scenes/avatar.tscn" id="14_d4q6i"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tnbrt"]
@@ -53,9 +52,6 @@ radius = 0.2
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_jxj2e")
-
-[node name="AstralPlane" type="Node" parent="."]
-script = ExtResource("2_f3l8a")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8l3hs")
@@ -104,8 +100,8 @@ hand_material_override = SubResource("StandardMaterial3D_nodyl")
 pitch = 0
 bearing = 0
 
-[node name="MovementLerp" parent="XROrigin3D" node_paths=PackedStringArray("target") instance=ExtResource("11_uopa1")]
-target = NodePath("../../World/Avatar")
+[node name="Substitution" parent="XROrigin3D" node_paths=PackedStringArray("avatar") instance=ExtResource("11_tnavo")]
+avatar = NodePath("../../World/Avatar")
 
 [node name="World" type="Node3D" parent="."]
 
@@ -131,8 +127,4 @@ shape = SubResource("CylinderShape3D_h67v4")
 
 [node name="Avatar" parent="World" instance=ExtResource("14_d4q6i")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9003, 0, -3.51102)
-
-[connection signal="button_pressed" from="XROrigin3D/LeftController" to="AstralPlane" method="_on_button_pressed"]
-[connection signal="button_released" from="XROrigin3D/LeftController" to="AstralPlane" method="_on_button_released"]
-[connection signal="button_pressed" from="XROrigin3D/RightController" to="AstralPlane" method="_on_button_pressed"]
-[connection signal="button_released" from="XROrigin3D/RightController" to="AstralPlane" method="_on_button_released"]
+visible = false
