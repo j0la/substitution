@@ -124,6 +124,7 @@ bearing = 0
 
 [node name="Substitution" parent="XROrigin3D" node_paths=PackedStringArray("avatar") instance=ExtResource("11_tnavo")]
 avatar = NodePath("../../World/Avatar")
+interpolation_speed = 2.0
 
 [node name="World" type="Node3D" parent="."]
 

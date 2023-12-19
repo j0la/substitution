@@ -14,10 +14,10 @@ signal end_sub() # emitted when player replaces avatar (end of interpolation)
 
 @export var button := "trigger_click"
 @export var avatar: Node3D # object to spawn and substitute
-@export var avatar_offset := 0 # distance from avatar to stop interpolation
-@export var interpolation_speed := 20 # avatar interpolation speed
+@export var interpolation_speed := 2.0 # avatar interpolation speed
 
 var order := 1 # movement provider priority (lowest runs first)
+var lerp_t := 0.0
 
 @onready var _player := XRHelpers.get_xr_origin(self).get_node('PlayerBody')
 
@@ -37,19 +37,18 @@ func physics_movement(delta: float, player_body: XRToolsPlayerBody, disabled: bo
 		is_active = false
 		return
 	
-	if is_active and avatar.visible:
-		var distance_to_avatar := player_body.global_position.distance_to(avatar.global_position)
-		if distance_to_avatar < max(avatar_offset, 0.25):
-			# within offset to avatar
-			# stop player, disable lerp, and hide avatar
-			player_body.velocity = player_body.move_body(Vector3(0, 0, 0))
+	if is_active:
+		if lerp_t < 1:
+			# interpolate to avatar
+			var new_xform = player_body.global_transform.interpolate_with(avatar.global_transform, lerp_t)
+			lerp_t += delta * interpolation_speed
+			player_body.teleport(new_xform)
+		else:
+			# interpolation complete
+			# disable movement control and hide avatar
 			is_active = false
 			avatar.visible = false
 			end_sub.emit()
-		else:
-			# interpolate towards avatar
-			var lerp_dir := player_body.global_position.direction_to(avatar.global_position)
-			player_body.velocity = player_body.move_body(lerp_dir * interpolation_speed)
 		
 		# return true to indicate to player body that this was an exclusive movement
 		# gravity & ground physics wont be applied
@@ -64,6 +63,7 @@ func _on_button_pressed(name: String):
 			# avatar is present, activate lerp
 			if !is_active:
 				start_sub.emit()
+				lerp_t = 0.0
 				is_active = true
 		else:
 			# drop avatar at player position
