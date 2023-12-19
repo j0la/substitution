@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://ddft7pgnueqtr"]
+[gd_scene load_steps=8 format=3 uid="uid://ddft7pgnueqtr"]
 
 [ext_resource type="Script" path="res://addons/godot-xr-tools/objects/pickable.gd" id="1_4hufs"]
 
@@ -13,6 +13,17 @@ albedo_color = Color(0.666667, 0.2, 1, 0.588235)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ftirh"]
 radius = 0.25
 height = 1.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_0qruq"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s77id"]
+transparency = 1
+albedo_color = Color(0.666667, 0.2, 1, 0.588235)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_b1dc1"]
+radius = 0.1
 
 [node name="Avatar" type="RigidBody3D"]
 process_mode = 4
@@ -32,3 +43,14 @@ surface_material_override/0 = SubResource("StandardMaterial3D_67qu0")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 shape = SubResource("CapsuleShape3D_ftirh")
+
+[node name="Node3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.16027, -0.352454)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Node3D"]
+mesh = SubResource("SphereMesh_0qruq")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_s77id")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Node3D"]
+shape = SubResource("SphereShape3D_b1dc1")

@@ -69,7 +69,8 @@ albedo_color = Color(1, 0.396078, 0.0196078, 1)
 [node name="Main" type="Node3D"]
 script = ExtResource("1_jxj2e")
 
-[node name="Mini" parent="." node_paths=PackedStringArray("hold_controller", "manipulate_controller", "world") instance=ExtResource("2_pua4e")]
+[node name="Mini" parent="." node_paths=PackedStringArray("player", "hold_controller", "manipulate_controller", "world") instance=ExtResource("2_pua4e")]
+player = NodePath("../XROrigin3D/PlayerBody")
 hold_controller = NodePath("../XROrigin3D/LeftController")
 manipulate_controller = NodePath("../XROrigin3D/RightController")
 world = NodePath("../World")
