@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://mh03uhwjdx5t"]
+
+[ext_resource type="Material" uid="uid://cm584httm8g64" path="res://materials/grid.tres" id="1_qx4fy"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_tk4ue"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gfb04"]
+
+[node name="Pyramid" type="StaticBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
+mesh = SubResource("PrismMesh_tk4ue")
+surface_material_override/0 = ExtResource("1_qx4fy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_gfb04")
