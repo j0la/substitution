@@ -1,5 +1,7 @@
 **Substitution** is a VR locomotion technique built for the Oculus Quest with [Godot](https://godotengine.org/).
 
+![](demo.gif)
+
 Both the left and right controller are equipped with direct movement and turning via [Godot XR Tools](https://docs.godotengine.org/en/stable/tutorials/xr/introducing_xr_tools.html). Additionally, the left controller can activate flight mode with the X button or teleport with the trigger.
 
 `substitution.tscn` provides the avatar substitution mechanic. Substitution provides teleportation with rapid transition (the player interpolates to the new position). Pressing the button configured in the inspector spawns an avatar at the player's position. Pressing the button a second time interpolates the player towards the avatar. A `button_pressed` signal from the desired controller should be connected to `_on_button_pressed`. This mechanic is implemented as a custom XR Tools movement provider.
